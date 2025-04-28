@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports - Inventory Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <div class="d-flex align-items-center justify-content-center mb-4">
+                        <i class="bi bi-box-seam text-white me-2 fs-4"></i>
+                        <span class="fs-4 text-white">Inventory System</span>
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/dashboard">
+                                <i class="bi bi-speedometer2 me-2"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/inventory">
+                                <i class="bi bi-box me-2"></i>
+                                Inventory
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/reports">
+                                <i class="bi bi-graph-up me-2"></i>
+                                Reports
+                            </a>
+                        </li>
+                        <li class="nav-item mt-5">
+                            <a class="nav-link" href="/">
+                                <i class="bi bi-box-arrow-right me-2"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Inventory Reports</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="printReportBtn">
+                            <i class="bi bi-printer me-1"></i>
+                            Print Report
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Report Navigation -->
+                <ul class="nav nav-tabs mb-4" id="reportTabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="summary-tab" data-bs-toggle="tab" href="#summary">Inventory Summary</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="low-stock-tab" data-bs-toggle="tab" href="#low-stock">Low Stock Items</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="category-tab" data-bs-toggle="tab" href="#category">Category Analysis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="value-tab" data-bs-toggle="tab" href="#value">Value Analysis</a>
+                    </li>
+                </ul>
+
+                <!-- Report Content -->
+                <div class="tab-content" id="reportTabContent">
+                    <!-- Inventory Summary Tab -->
+                    <div class="tab-pane fade show active" id="summary" role="tabpanel" aria-labelledby="summary-tab">
+                        <div class="row">
+                            <div class="col-md-8 mb-4">
+                                <div class="card shadow-sm">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">Inventory Overview</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <div class="card bg-light">
+                                                    <div class="card-body text-center">
+                                                        <h6 class="text-muted">Total Items</h6>
+                                                        <h2 id="summaryTotalItems">0</h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="card bg-light">
+                                                    <div class="card-body text-center">
+                                                        <h6 class="text-muted">Total Value</h6>
+                                                        <h2 id="summaryTotalValue">$0.00</h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="card bg-light">
+                                                    <div class="card-body text-center">
+                                                        <h6 class="text-muted">Categories</h6>
+                                                        <h2 id="summaryCategories">0</h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="card bg-light">
+                                                    <div class="card-body text-center">
+                                                        <h6 class="text-muted">Total Quantity</h6>
+                                                        <h2 id="summaryQuantity">0</h2>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card shadow-sm">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">Stock Status</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="stockStatusChart" height="200"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Low Stock Items Tab -->
+                    <div class="tab-pane fade" id="low-stock" role="tabpanel" aria-labelledby="low-stock-tab">
+                        <div class="row">
+                            <div class="col-12 mb-4">
+                                <div class="card shadow-sm">
+                                    <div class="card-header bg-warning text-dark">
+                                        <h5 class="mb-0">Low Stock Items</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Category</th>
+                                                        <th>Quantity</th>
+                                                        <th>Reorder Level</th>
+                                                        <th>Price</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="lowStockTable">
+                                                    <tr>
+                                                        <td colspan="7" class="text-center">Loading low stock items...</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-4">
+                                <div class="card shadow-sm">
+                                    <div class="card-header bg-danger text-white">
+                                        <h5 class="mb-0">Out of Stock Items</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Category</th>
+                                                        <th>Reorder Level</th>
+                                                        <th>Price</th>
+                                                        <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="outOfStockTable">
+                                                    <tr>
+                                                        <td colspan="5" class="text-center">Loading out of stock items...</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category Analysis Tab -->
+                    <div class="tab-pane fade" id="category" role="tabpanel" aria-labelledby="category-tab">
+                        <div class="row">
+                            <div class="col-md-5 mb-4">
+                                <div class="card shadow-sm">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">Items by Category</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="categoryItemsChart" height="300"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-7 mb-4">
+                                <div class="card shadow-sm">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">Category Breakdown</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Category</th>
+                                                        <th>Number of Items</th>
+                                                        <th>Total Value</th>
+                                                        <th>Avg. Price</th>
+                                                        <th>Percentage</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="categoryTable">
+                                                    <tr>
+                                                        <td colspan="5" class="text-center">Loading category data...</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Value Analysis Tab -->
+                    <div class="tab-pane fade" id="value" role="tabpanel" aria-labelledby="value-tab">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="card shadow-sm">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">Value by Category</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="categoryValueChart" height="300"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="card shadow-sm">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">Top Value Items</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Category</th>
+                                                        <th>Quantity</th>
+                                                        <th>Price</th>
+                                                        <th>Total Value</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="topValueTable">
+                                                    <tr>
+                                                        <td colspan="5" class="text-center">Loading top value items...</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/reports.js"></script>
+</body>
+</html>
