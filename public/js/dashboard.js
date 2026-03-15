@@ -1,7 +1,3 @@
-/**
- * Inventory Management System
- * Dashboard JavaScript file
- */
 
 document.addEventListener('DOMContentLoaded', function() {
     loadDashboardData();

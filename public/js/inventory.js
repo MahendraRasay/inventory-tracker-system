@@ -379,16 +379,19 @@ async function saveItem() {
     
     try {
         const formData = getFormData('addItemForm');
+        console.log('Sending data to server:', formData);
         
         // Convert numeric fields
         formData.quantity = parseInt(formData.quantity);
         formData.price = parseFloat(formData.price);
         formData.reorderLevel = parseInt(formData.reorderLevel);
         
-        await fetchApi('/items', {
+        const response = await fetchApi('/items', {
             method: 'POST',
             body: JSON.stringify(formData)
         });
+        
+        console.log('Server response:', response);
         
         // Close modal and reset form
         const modal = bootstrap.Modal.getInstance(document.getElementById('addItemModal'));
@@ -456,16 +459,19 @@ async function updateItem() {
     
     try {
         const formData = getFormData('editItemForm');
+        console.log('Updating item with data:', formData);
         
         // Convert numeric fields
         formData.quantity = parseInt(formData.quantity);
         formData.price = parseFloat(formData.price);
         formData.reorderLevel = parseInt(formData.reorderLevel);
         
-        await fetchApi(`/items/${itemId}`, {
+        const updatedItem = await fetchApi(`/items/${itemId}`, {
             method: 'PUT',
             body: JSON.stringify(formData)
         });
+        
+        console.log('Item updated:', updatedItem);
         
         // Close modal
         const modal = bootstrap.Modal.getInstance(document.getElementById('editItemModal'));
@@ -489,9 +495,12 @@ async function deleteItem() {
     const itemId = document.getElementById('confirmDeleteBtn').getAttribute('data-item-id');
     
     try {
-        await fetchApi(`/items/${itemId}`, {
+        console.log('Deleting item with ID:', itemId);
+        const response = await fetchApi(`/items/${itemId}`, {
             method: 'DELETE'
         });
+        
+        console.log('Item deleted:', response);
         
         // Close modal
         const modal = bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal'));

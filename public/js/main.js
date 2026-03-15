@@ -74,11 +74,12 @@ function getStockStatus(quantity, reorderLevel = 10) {
         return { class: 'success', text: 'In Stock', icon: 'status-in-stock' };
     }
 }
-
-// Fetch API wrapper with error handling
+// Update only this function in your main.js file
 async function fetchApi(endpoint, options = {}) {
     try {
         const url = `${API_BASE_URL}${endpoint}`;
+        console.log(`Making ${options.method || 'GET'} request to: ${url}`);
+        
         const response = await fetch(url, {
             ...options,
             headers: {
@@ -93,7 +94,9 @@ async function fetchApi(endpoint, options = {}) {
             throw new Error(errorData?.message || `API error: ${response.status}`);
         }
 
-        return await response.json();
+        const data = await response.json();
+        console.log(`Response from ${url}:`, data);
+        return data;
     } catch (error) {
         console.error('API request failed:', error);
         showToast(error.message, 'danger');

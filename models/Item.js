@@ -42,6 +42,10 @@ const ItemSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     createdAt: {
         type: Date,
         default: Date.now
@@ -56,22 +60,6 @@ const ItemSchema = new mongoose.Schema({
 ItemSchema.pre('save', function(next) {
     this.updatedAt = Date.now();
     next();
-});
-
-// Virtual for total value
-ItemSchema.virtual('totalValue').get(function() {
-    return this.quantity * this.price;
-});
-
-// Virtual for stock status
-ItemSchema.virtual('stockStatus').get(function() {
-    if (this.quantity <= 0) {
-        return 'Out of Stock';
-    } else if (this.quantity <= this.reorderLevel) {
-        return 'Low Stock';
-    } else {
-        return 'In Stock';
-    }
 });
 
 module.exports = mongoose.model('Item', ItemSchema);
